@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solicitar Cotización | Proadministra + SIMARC</title>
+    <meta name="description" content="Solicita una cotización personalizada para servicios de administración de edificios con Proadministra o mantenciones con SIMARC.">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ---- QUOTE PAGE SPECIFIC ---- */
+        .quote-page {
+            min-height: 100vh;
+            background: var(--color-gray-100);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .quote-hero {
+            background: linear-gradient(135deg, var(--color-proadmin-blue) 0%, #061933 100%);
+            padding: 56px 0 80px;
+            position: relative;
+            overflow: hidden;
+        }
+        .quote-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(circle at 70% 50%, rgba(55,168,73,0.12) 0%, transparent 60%);
+        }
+        .quote-hero-inner {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            color: #fff;
+        }
+        .quote-hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.25);
+            backdrop-filter: blur(8px);
+            padding: 6px 18px;
+            border-radius: 50px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-bottom: 20px;
+            color: var(--color-simarc-green);
+        }
+        .quote-hero-badge i { color: var(--color-simarc-green); }
+        .quote-hero h1 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 16px;
+        }
+        .quote-hero h1 span { color: var(--color-simarc-green); }
+        .quote-hero p {
+            font-size: 1.05rem;
+            opacity: 0.8;
+            max-width: 520px;
+            margin: 0 auto;
+        }
+
+        /* ---- MAIN BODY (split layout) ---- */
+        .quote-body {
+            display: grid;
+            grid-template-columns: 1fr 420px;
+            gap: 0;
+            max-width: 1200px;
+            margin: -40px auto 60px;
+            padding: 0 20px;
+            align-items: start;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* ---- FORM CARD ---- */
+        .quote-card {
+            background: #fff;
+            border-radius: 20px 0 0 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+            padding: 48px 44px;
+        }
+
+        /* Step indicator */
+        .steps-nav {
+            display: flex;
+            gap: 0;
+            margin-bottom: 40px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--color-gray-200);
+        }
+        .step-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 18px;
+            background: var(--color-gray-100);
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--color-gray-600);
+            transition: background 0.3s, color 0.3s;
+            position: relative;
+        }
+        .step-btn .step-num {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: var(--color-gray-200);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 700;
+            transition: background 0.3s, color 0.3s;
+            flex-shrink: 0;
+        }
+        .step-btn.active {
+            background: var(--color-proadmin-blue);
+            color: #fff;
+        }
+        .step-btn.active .step-num {
+            background: rgba(255,255,255,0.2);
+            color: #fff;
+        }
+        .step-btn.done {
+            background: #f0faf3;
+            color: var(--color-simarc-green);
+        }
+        .step-btn.done .step-num {
+            background: var(--color-simarc-green);
+            color: #fff;
+        }
+
+        /* Form steps */
+        .form-step { display: none; animation: fadeIn 0.35s ease; }
+        .form-step.active { display: block; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Service cards */
+        .service-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 8px;
+        }
+        .service-card {
+            position: relative;
+            cursor: pointer;
+        }
+        .service-card input[type="radio"] { display: none; }
+        .service-card-inner {
+            border: 2px solid var(--color-gray-200);
+            border-radius: 14px;
+            padding: 28px 20px;
+            text-align: center;
+            transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+            background: #fff;
+            user-select: none;
+        }
+        .service-card-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.7rem;
+            transition: background 0.25s, color 0.25s;
+            background: var(--color-gray-100);
+            color: var(--color-gray-600);
+        }
+        .service-card-inner h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--color-gray-800);
+            transition: color 0.25s;
+        }
+        .service-card-inner p {
+            font-size: 0.82rem;
+            color: var(--color-gray-600);
+            line-height: 1.5;
+        }
+        .service-card-check {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 2px solid var(--color-gray-200);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            color: transparent;
+            transition: all 0.25s;
+        }
+        /* Pro selected */
+        .service-card.pro-card input:checked ~ .service-card-inner {
+            border-color: var(--color-proadmin-blue);
+            box-shadow: 0 0 0 4px rgba(11,45,92,0.08);
+            transform: translateY(-3px);
+        }
+        .service-card.pro-card input:checked ~ .service-card-inner .service-card-icon {
+            background: rgba(11,45,92,0.08);
+            color: var(--color-proadmin-blue);
+        }
+        .service-card.pro-card input:checked ~ .service-card-inner h4 { color: var(--color-proadmin-blue); }
+        .service-card.pro-card input:checked ~ .service-card-check {
+            background: var(--color-proadmin-blue);
+            border-color: var(--color-proadmin-blue);
+            color: #fff;
+        }
+        /* Simarc selected */
+        .service-card.simarc-card input:checked ~ .service-card-inner {
+            border-color: var(--color-simarc-green);
+            box-shadow: 0 0 0 4px rgba(55,168,73,0.08);
+            transform: translateY(-3px);
+        }
+        .service-card.simarc-card input:checked ~ .service-card-inner .service-card-icon {
+            background: rgba(55,168,73,0.08);
+            color: var(--color-simarc-green);
+        }
+        .service-card.simarc-card input:checked ~ .service-card-inner h4 { color: var(--color-simarc-green); }
+        .service-card.simarc-card input:checked ~ .service-card-check {
+            background: var(--color-simarc-green);
+            border-color: var(--color-simarc-green);
+            color: #fff;
+        }
+        .service-card:hover .service-card-inner {
+            border-color: var(--color-gray-600);
+            transform: translateY(-2px);
+        }
+
+        /* Floating label inputs */
+        .field {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        .field-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .field input,
+        .field textarea,
+        .field select {
+            width: 100%;
+            padding: 20px 45px 8px 16px;
+            border: 1.5px solid var(--color-gray-200);
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            color: var(--color-gray-900);
+            background: #fff;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            outline: none;
+            appearance: none;
+        }
+        .field textarea { resize: vertical; min-height: 110px; padding-top: 22px; }
+        .field label {
+            position: absolute;
+            top: 14px;
+            left: 16px;
+            font-size: 0.9rem;
+            color: var(--color-gray-600);
+            pointer-events: none;
+            transition: top 0.2s, font-size 0.2s, color 0.2s;
+        }
+        .field input:focus,
+        .field textarea:focus,
+        .field select:focus {
+            border-color: var(--color-proadmin-blue);
+            box-shadow: 0 0 0 4px rgba(11,45,92,0.06);
+        }
+        .field input:focus ~ label,
+        .field input:not(:placeholder-shown) ~ label,
+        .field textarea:focus ~ label,
+        .field textarea:not(:placeholder-shown) ~ label,
+        .field select:focus ~ label,
+        .field select:not([value=""]) ~ label {
+            top: 6px;
+            font-size: 0.72rem;
+            color: var(--color-proadmin-blue);
+            font-weight: 600;
+        }
+        .field-icon {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--color-gray-600);
+            font-size: 0.9rem;
+        }
+        textarea ~ .field-icon { top: 24px; transform: none; }
+
+        /* Step nav buttons */
+        .step-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 32px;
+        }
+        .btn-step-back {
+            flex: 0 0 auto;
+            background: var(--color-gray-100);
+            border: none;
+            padding: 14px 24px;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--color-gray-600);
+            transition: background 0.2s;
+        }
+        .btn-step-back:hover { background: var(--color-gray-200); }
+        .btn-step-next {
+            flex: 1;
+            background: var(--color-proadmin-blue);
+            border: none;
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 16px rgba(11,45,92,0.25);
+        }
+        .btn-step-next:hover {
+            background: #071c3d;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(11,45,92,0.3);
+        }
+        .btn-step-submit {
+            flex: 1;
+            background: linear-gradient(135deg, var(--color-simarc-green) 0%, #2d8c3b 100%);
+            border: none;
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 16px rgba(55,168,73,0.3);
+        }
+        .btn-step-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(55,168,73,0.4);
+        }
+
+        /* Section label */
+        .form-section-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: var(--color-gray-600);
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+        .form-step-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--color-proadmin-blue);
+            margin-bottom: 4px;
+        }
+        .form-step-subtitle {
+            font-size: 0.9rem;
+            color: var(--color-gray-600);
+            margin-bottom: 28px;
+        }
+
+        /* Select */
+        .field select { padding-top: 20px; }
+
+        /* ---- SIDEBAR ---- */
+        .quote-sidebar {
+            background: linear-gradient(160deg, var(--color-proadmin-blue) 0%, #051426 100%);
+            border-radius: 0 20px 20px 0;
+            padding: 48px 36px;
+            color: #fff;
+            position: sticky;
+            top: 100px;
+        }
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 36px;
+        }
+        .sidebar-brand-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+        }
+        .sidebar-brand strong { font-size: 1rem; display: block; }
+        .sidebar-brand span { font-size: 0.75rem; opacity: 0.6; }
+
+        .sidebar-heading {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .sidebar-desc {
+            font-size: 0.85rem;
+            opacity: 0.7;
+            margin-bottom: 32px;
+            line-height: 1.6;
+        }
+
+        .sidebar-benefits {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        .benefit-item {
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+        }
+        .benefit-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            color: var(--color-simarc-green);
+            flex-shrink: 0;
+        }
+        .benefit-text strong {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+        .benefit-text span {
+            font-size: 0.8rem;
+            opacity: 0.65;
+        }
+
+        .sidebar-divider {
+            height: 1px;
+            background: rgba(255,255,255,0.1);
+            margin: 32px 0;
+        }
+
+        .sidebar-contact-title {
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            opacity: 0.5;
+            margin-bottom: 16px;
+        }
+        .sidebar-contact-item {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 14px;
+            font-size: 0.85rem;
+        }
+        .sidebar-contact-item i {
+            color: var(--color-simarc-green);
+            width: 16px;
+            text-align: center;
+        }
+
+        /* Success state */
+        .quote-success {
+            display: none;
+            text-align: center;
+            padding: 20px 0;
+        }
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--color-simarc-green), #2d8c3b);
+            margin: 0 auto 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #fff;
+            box-shadow: 0 8px 24px rgba(55,168,73,0.35);
+            animation: popIn 0.5s cubic-bezier(.22,1,.36,1);
+        }
+        @keyframes popIn {
+            from { transform: scale(0); opacity: 0; }
+            to   { transform: scale(1); opacity: 1; }
+        }
+        .quote-success h3 {
+            font-size: 1.5rem;
+            color: var(--color-proadmin-blue);
+            margin-bottom: 10px;
+        }
+        .quote-success p {
+            color: var(--color-gray-600);
+            margin-bottom: 28px;
+        }
+
+        /* Progress dots */
+        .progress-dots {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 32px;
+        }
+        .progress-dot {
+            height: 4px;
+            border-radius: 2px;
+            background: var(--color-gray-200);
+            transition: width 0.4s, background 0.4s;
+            flex: 1;
+        }
+        .progress-dot.active { background: var(--color-proadmin-blue); }
+        .progress-dot.done { background: var(--color-simarc-green); }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .quote-body { grid-template-columns: 1fr; }
+            .quote-card { border-radius: 20px; }
+            .quote-sidebar { border-radius: 20px; }
+            .field-row { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 600px) {
+            .quote-card { padding: 28px 20px; }
+            .service-grid { grid-template-columns: 1fr; }
+            .quote-hero { padding: 40px 0 64px; }
+        }
+    </style>
+</head>
+<body class="quote-page">
+
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="container top-bar-inner">
+            <div class="top-bar-left">
+                <span><i class="fa-solid fa-location-dot"></i> Santiago y alrededores</span>
+                <a href="tel:+56912345678" style="color:inherit;text-decoration:none;"><i class="fa-solid fa-phone"></i> +56 9 1234 5678</a>
+                <span><i class="fa-solid fa-envelope"></i> contacto@proadministra.cl</span>
+            </div>
+            <div class="top-bar-right">
+                <a href="tel:+56912345678" class="btn-emergency"><i class="fa-solid fa-phone-volume"></i> Emergencias 24/7</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <header class="header">
+        <div class="container header-inner">
+            <div class="logo-container">
+                <div class="logo logo-proadministra">
+                    <i class="fa-solid fa-building"></i>
+                    <div>
+                        <span class="logo-title">PROADMINISTRA</span>
+                        <span class="logo-subtitle">ADMINISTRACIÓN DE EDIFICIOS Y CONDOMINIOS</span>
+                    </div>
+                </div>
+                <div class="logo-divider"></div>
+                <div class="logo logo-simarc">
+                    <i class="fa-solid fa-house-chimney-crack"></i>
+                    <div>
+                        <span class="logo-title">SIMARC</span>
+                        <span class="logo-subtitle">MANTENCIÓN Y REPARACIONES</span>
+                    </div>
+                </div>
+            </div>
+            <button class="mobile-menu-toggle" aria-label="Abrir menú">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <nav class="nav-links">
+                <a href="index.html">Inicio</a>
+                <a href="administracion.html">Administración</a>
+                <a href="mantenciones.html">Mantenciones</a>
+                <a href="servicios.html">Servicios</a>
+                <a href="nosotros.html">Nosotros</a>
+                <a href="index.html#contacto">Contacto</a>
+            </nav>
+            <div class="nav-cta">
+                <a href="cotizacion.html" class="btn-primary">Solicitar Cotización</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Banner -->
+    <section class="quote-hero">
+        <div class="container quote-hero-inner">
+            <div class="quote-hero-badge"><i class="fa-solid fa-file-lines"></i> Cotización sin compromiso</div>
+            <h1>Cuéntanos qué necesitas.<br><span>Te respondemos en 24 hrs.</span></h1>
+            <p>Completa el formulario y uno de nuestros ejecutivos te contactará con una propuesta a medida.</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="quote-body container">
+
+        <!-- Form Card -->
+        <div class="quote-card">
+
+            <!-- Progress dots -->
+            <div class="progress-dots">
+                <div class="progress-dot active" id="dot-1"></div>
+                <div class="progress-dot" id="dot-2"></div>
+                <div class="progress-dot" id="dot-3"></div>
+            </div>
+
+            <!-- Step navigation tabs -->
+            <div class="steps-nav">
+                <button type="button" class="step-btn active" id="tab-1">
+                    <span class="step-num">1</span> Servicio
+                </button>
+                <button type="button" class="step-btn" id="tab-2">
+                    <span class="step-num">2</span> Tus datos
+                </button>
+                <button type="button" class="step-btn" id="tab-3">
+                    <span class="step-num">3</span> Detalle
+                </button>
+            </div>
+
+            <form id="quote-form" novalidate>
+
+                <!-- STEP 1: Servicio -->
+                <div class="form-step active" id="step-1">
+                    <p class="form-section-label">Paso 1 de 3</p>
+                    <h2 class="form-step-title">¿Qué servicio necesitas?</h2>
+                    <p class="form-step-subtitle">Selecciona la empresa que mejor se adapta a lo que estás buscando.</p>
+
+                    <div class="service-grid">
+                        <label class="service-card pro-card">
+                            <input type="radio" name="servicio" value="proadministra" id="svc-pro">
+                            <div class="service-card-inner">
+                                <div class="service-card-icon"><i class="fa-solid fa-building"></i></div>
+                                <h4>PROADMINISTRA</h4>
+                                <p>Administración integral de edificios y condominios: gestión, finanzas, cobranza y más.</p>
+                            </div>
+                            <div class="service-card-check"><i class="fa-solid fa-check"></i></div>
+                        </label>
+
+                        <label class="service-card simarc-card">
+                            <input type="radio" name="servicio" value="simarc" id="svc-simarc">
+                            <div class="service-card-inner">
+                                <div class="service-card-icon"><i class="fa-solid fa-house-chimney-crack"></i></div>
+                                <h4>SIMARC</h4>
+                                <p>Mantenciones preventivas y correctivas: gasfitería, electricidad, reparaciones y obras menores.</p>
+                            </div>
+                            <div class="service-card-check"><i class="fa-solid fa-check"></i></div>
+                        </label>
+                    </div>
+
+                    <div class="step-actions">
+                        <button type="button" class="btn-step-next" id="next-1">
+                            Continuar <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- STEP 2: Datos -->
+                <div class="form-step" id="step-2">
+                    <p class="form-section-label">Paso 2 de 3</p>
+                    <h2 class="form-step-title">Cuéntanos sobre ti</h2>
+                    <p class="form-step-subtitle">Necesitamos tus datos para poder contactarte con la propuesta.</p>
+
+                    <div class="field">
+                        <input type="text" id="nombre" placeholder=" " autocomplete="name" required>
+                        <label for="nombre">Nombre completo *</label>
+                        <span class="field-icon"><i class="fa-regular fa-user"></i></span>
+                    </div>
+
+                    <div class="field-row">
+                        <div class="field">
+                            <input type="email" id="email" placeholder=" " autocomplete="email" required>
+                            <label for="email">Correo electrónico *</label>
+                            <span class="field-icon"><i class="fa-regular fa-envelope"></i></span>
+                        </div>
+                        <div class="field">
+                            <input type="tel" id="telefono" placeholder=" " autocomplete="tel" required>
+                            <label for="telefono">Teléfono *</label>
+                            <span class="field-icon"><i class="fa-solid fa-phone"></i></span>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <input type="text" id="comunidad" placeholder=" ">
+                        <label for="comunidad">Nombre de la comunidad o edificio</label>
+                        <span class="field-icon"><i class="fa-solid fa-city"></i></span>
+                    </div>
+
+                    <div class="step-actions">
+                        <button type="button" class="btn-step-back" id="back-2">
+                            <i class="fa-solid fa-arrow-left"></i>
+                        </button>
+                        <button type="button" class="btn-step-next" id="next-2">
+                            Continuar <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- STEP 3: Detalle -->
+                <div class="form-step" id="step-3">
+                    <p class="form-section-label">Paso 3 de 3</p>
+                    <h2 class="form-step-title">Detalla tu solicitud</h2>
+                    <p class="form-step-subtitle">Mientras más información nos des, mejor podremos preparar tu cotización.</p>
+
+                    <div class="field">
+                        <select id="urgencia">
+                            <option value="" disabled selected></option>
+                            <option value="normal">Normal (en los próximos días)</option>
+                            <option value="pronto">Pronto (esta semana)</option>
+                            <option value="urgente">Urgente (hoy o mañana)</option>
+                        </select>
+                        <label for="urgencia">¿Con qué urgencia lo necesitas?</label>
+                    </div>
+
+                    <div class="field">
+                        <textarea id="mensaje" placeholder=" " required></textarea>
+                        <label for="mensaje">Describe lo que necesitas *</label>
+                        <span class="field-icon"><i class="fa-regular fa-comment-dots"></i></span>
+                    </div>
+
+                    <div class="step-actions">
+                        <button type="button" class="btn-step-back" id="back-3">
+                            <i class="fa-solid fa-arrow-left"></i>
+                        </button>
+                        <button type="submit" class="btn-step-submit">
+                            <i class="fa-solid fa-paper-plane"></i> Enviar cotización
+                        </button>
+                    </div>
+                </div>
+
+                <!-- SUCCESS -->
+                <div class="quote-success" id="quote-success">
+                    <div class="success-icon"><i class="fa-solid fa-check"></i></div>
+                    <h3>¡Solicitud enviada!</h3>
+                    <p>Recibimos tu cotización. Un ejecutivo te contactará en las próximas 24 horas hábiles.</p>
+                    <a href="index.html" class="btn-primary"><i class="fa-solid fa-house"></i> Volver al inicio</a>
+                </div>
+
+            </form>
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="quote-sidebar">
+            <div class="sidebar-brand">
+                <div class="sidebar-brand-icon"><i class="fa-solid fa-building"></i></div>
+                <div>
+                    <strong>PROADMINISTRA</strong>
+                    <span>+ SIMARC</span>
+                </div>
+            </div>
+
+            <h3 class="sidebar-heading">¿Por qué elegirnos?</h3>
+            <p class="sidebar-desc">Somos el único equipo que administra <em>y también resuelve</em>. Todo en un solo lugar.</p>
+
+            <div class="sidebar-benefits">
+                <div class="benefit-item">
+                    <div class="benefit-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                    <div class="benefit-text">
+                        <strong>Sin letra chica</strong>
+                        <span>Cotizaciones claras y transparentes, sin sorpresas.</span>
+                    </div>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon"><i class="fa-solid fa-bolt"></i></div>
+                    <div class="benefit-text">
+                        <strong>Respuesta en 24 hrs</strong>
+                        <span>Te contactamos con una propuesta personalizada.</span>
+                    </div>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon"><i class="fa-solid fa-handshake"></i></div>
+                    <div class="benefit-text">
+                        <strong>Sin costo ni compromiso</strong>
+                        <span>La cotización es 100% gratuita y sin obligación.</span>
+                    </div>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon"><i class="fa-solid fa-clock"></i></div>
+                    <div class="benefit-text">
+                        <strong>Atención 24/7</strong>
+                        <span>Para urgencias, siempre disponibles.</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-divider"></div>
+
+            <p class="sidebar-contact-title">O contáctanos directamente</p>
+            <div class="sidebar-contact-item">
+                <i class="fa-brands fa-whatsapp"></i>
+                <a href="tel:+56912345678" style="color:inherit;text-decoration:none;">+56 9 1234 5678</a>
+            </div>
+            <div class="sidebar-contact-item">
+                <i class="fa-solid fa-envelope"></i>
+                <span>contacto@proadministra.cl</span>
+            </div>
+            <div class="sidebar-contact-item">
+                <i class="fa-solid fa-location-dot"></i>
+                <span>Santiago y alrededores</span>
+            </div>
+        </aside>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-top">
+            <div class="container footer-grid">
+
+                <!-- Columna 1: Marca -->
+                <div class="footer-brand">
+                    <div class="footer-logos">
+                        <div class="footer-logo-item">
+                            <div class="fl-pro"><i class="fa-solid fa-building"></i></div>
+                            <div>
+                                <strong>PROADMINISTRA</strong>
+                                <span>Administración de edificios y condominios</span>
+                            </div>
+                        </div>
+                        <div class="footer-logo-item">
+                            <div class="fl-simarc"><i class="fa-solid fa-house-chimney-crack"></i></div>
+                            <div>
+                                <strong>SIMARC</strong>
+                                <span>Mantención y reparaciones</span>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="footer-tagline">Un solo equipo que administra y también resuelve. Todo lo que tu comunidad necesita, en un solo lugar.</p>
+                    <div class="footer-social">
+                        <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+
+                <!-- Columna 2: Navegación -->
+                <div>
+                    <p class="footer-col-title">Navegación</p>
+                    <nav class="footer-nav">
+                        <a href="index.html"><i class="fa-solid fa-chevron-right"></i> Inicio</a>
+                        <a href="administracion.html"><i class="fa-solid fa-chevron-right"></i> Administración</a>
+                        <a href="mantenciones.html"><i class="fa-solid fa-chevron-right"></i> Mantenciones</a>
+                        <a href="servicios.html"><i class="fa-solid fa-chevron-right"></i> Servicios</a>
+                        <a href="nosotros.html"><i class="fa-solid fa-chevron-right"></i> Nosotros</a>
+                        <a href="cotizacion.html"><i class="fa-solid fa-chevron-right"></i> Solicitar Cotización</a>
+                    </nav>
+                </div>
+
+                <!-- Columna 3: Contacto -->
+                <div>
+                    <p class="footer-col-title">Contacto</p>
+                    <ul class="footer-contact-list">
+                        <li>
+                            <i class="fa-solid fa-phone"></i>
+                            <a href="tel:+56912345678">+56 9 1234 5678</a>
+                        </li>
+                        <li>
+                            <i class="fa-solid fa-envelope"></i>
+                            <span>contacto@proadministra.cl</span>
+                        </li>
+                        <li>
+                            <i class="fa-solid fa-location-dot"></i>
+                            <span>Santiago y alrededores</span>
+                        </li>
+                        <li>
+                            <i class="fa-regular fa-clock"></i>
+                            <span>Lun–Vie 9:00–18:00<br>Emergencias 24/7</span>
+                        </li>
+                        <li>
+                            <i class="fa-brands fa-whatsapp"></i>
+                            <a href="https://wa.me/56912345678" target="_blank" rel="noopener">Escribir por WhatsApp</a>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Bottom bar -->
+        <div class="footer-bottom">
+            <div class="container footer-bottom-inner">
+                <p>© 2026 Proadministra SpA. Todos los derechos reservados.</p>
+                <div class="footer-bottom-sep"></div>
+                <p>Santiago, Chile</p>
+            </div>
+        </div>
+    </footer>
+
+
+    <script src="script.js"></script>
+    <script>
+        const steps   = [1, 2, 3];
+        const dots    = steps.map(i => document.getElementById(`dot-${i}`));
+        const tabs    = steps.map(i => document.getElementById(`tab-${i}`));
+        const panels  = steps.map(i => document.getElementById(`step-${i}`));
+        let current   = 0;
+
+        function goTo(idx) {
+            panels[current].classList.remove('active');
+            tabs[current].classList.remove('active');
+            if (idx > current) tabs[current].classList.add('done');
+
+            current = idx;
+            panels[current].classList.add('active');
+            tabs[current].classList.add('active');
+
+            dots.forEach((d, i) => {
+                d.classList.remove('active', 'done');
+                if (i < current) d.classList.add('done');
+                if (i === current) d.classList.add('active');
+            });
+        }
+
+        // Step 1 → 2
+        document.getElementById('next-1').addEventListener('click', () => {
+            const radio = document.querySelector('input[name="servicio"]:checked');
+            if (!radio) { alert('Por favor selecciona un servicio.'); return; }
+            goTo(1);
+        });
+
+        // Step 2 → 3
+        document.getElementById('next-2').addEventListener('click', () => {
+            const nombre = document.getElementById('nombre').value.trim();
+            const email  = document.getElementById('email').value.trim();
+            const tel    = document.getElementById('telefono').value.trim();
+            if (!nombre || !email || !tel) { alert('Por favor completa los campos obligatorios.'); return; }
+            goTo(2);
+        });
+
+        // Backs
+        document.getElementById('back-2').addEventListener('click', () => goTo(0));
+        document.getElementById('back-3').addEventListener('click', () => goTo(1));
+
+        // Submit
+        document.getElementById('quote-form').addEventListener('submit', e => {
+            e.preventDefault();
+            const msg = document.getElementById('mensaje').value.trim();
+            if (!msg) { alert('Por favor describe lo que necesitas.'); return; }
+
+            panels[current].classList.remove('active');
+            document.getElementById('quote-success').style.display = 'block';
+            dots.forEach(d => { d.classList.remove('active'); d.classList.add('done'); });
+            tabs.forEach(t => { t.classList.remove('active'); t.classList.add('done'); });
+        });
+    </script>
+</body>
+</html>

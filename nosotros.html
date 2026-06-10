@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nosotros | Proadministra + SIMARC</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="container top-bar-inner">
+            <div class="top-bar-left">
+                <span><i class="fa-solid fa-location-dot"></i> Santiago y alrededores</span>
+                <a href="tel:+56912345678" style="color:inherit;text-decoration:none;"><i class="fa-solid fa-phone"></i> +56 9 1234 5678</a>
+                <span><i class="fa-solid fa-envelope"></i> contacto@proadministra.cl</span>
+            </div>
+            <div class="top-bar-right">
+                <a href="tel:+56912345678" class="btn-emergency"><i class="fa-solid fa-phone-volume"></i> Emergencias 24/7</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <header class="header">
+        <div class="container header-inner">
+            <div class="logo-container">
+                <div class="logo logo-proadministra">
+                    <i class="fa-solid fa-building"></i>
+                    <div>
+                        <span class="logo-title">PROADMINISTRA</span>
+                        <span class="logo-subtitle">ADMINISTRACIÓN DE EDIFICIOS Y CONDOMINIOS</span>
+                    </div>
+                </div>
+                <div class="logo-divider"></div>
+                <div class="logo logo-simarc">
+                    <i class="fa-solid fa-house-chimney-crack"></i>
+                    <div>
+                        <span class="logo-title">SIMARC</span>
+                        <span class="logo-subtitle">MANTENCIÓN Y REPARACIONES</span>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="mobile-menu-toggle" aria-label="Abrir menú">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <nav class="nav-links">
+                <a href="index.html">Inicio</a>
+                <a href="administracion.html">Administración</a>
+                <a href="mantenciones.html">Mantenciones</a>
+                <a href="servicios.html">Servicios</a>
+                <a href="nosotros.html" class="active">Nosotros</a>
+                <a href="#contacto">Contacto</a>
+            </nav>
+
+            <div class="nav-cta">
+                <a href="cotizacion.html" class="btn-primary">Solicitar Cotización</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Nosotros -->
+    <section class="hero-page">
+        <div class="hero-page-bg" style="background-image: url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=1200');"></div>
+        <div class="container hero-page-inner">
+            <h1 class="hero-page-title">Nosotros</h1>
+            <p class="hero-page-subtitle">Conoce más sobre Proadministra y SIMARC, un equipo comprometido con tu comunidad.</p>
+        </div>
+    </section>
+
+    <!-- Contenido Nosotros -->
+    <section class="page-section white-bg">
+        <div class="container">
+            <div class="about-grid">
+                
+                <div class="about-box">
+                    <h3>Proadministra</h3>
+                    <p>Somos una empresa especializada en administración de edificios y condominios.</p>
+                    <ul class="about-list">
+                        <li><i class="fa-solid fa-check"></i> Transparencia</li>
+                        <li><i class="fa-solid fa-check"></i> Orden financiero</li>
+                        <li><i class="fa-solid fa-check"></i> Gestión eficiente</li>
+                        <li><i class="fa-solid fa-check"></i> Compromiso con las personas</li>
+                    </ul>
+                </div>
+
+                <div class="cycle-diagram">
+                    <div class="cycle-node pro-node">
+                        <i class="fa-solid fa-building"></i>
+                    </div>
+                    <div class="cycle-arrows">
+                        <svg width="160" height="130" viewBox="0 0 160 130">
+                            <path d="M10,30 Q80,-20 150,30" fill="none" stroke="#002b5c" stroke-width="2" marker-end="url(#arrowhead)"/>
+                            <path d="M150,100 Q80,150 10,100" fill="none" stroke="#002b5c" stroke-width="2" marker-end="url(#arrowhead)"/>
+                            <defs>
+                                <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                                    <polygon points="0 0, 10 3.5, 0 7" fill="#002b5c" />
+                                </marker>
+                            </defs>
+                        </svg>
+                        <span class="cycle-text" style="text-align: center;">Administramos<br>y también<br>resolvemos</span>
+                    </div>
+                    <div class="cycle-node simarc-node">
+                        <i class="fa-solid fa-house-chimney-crack"></i>
+                    </div>
+                </div>
+
+                <div class="about-box">
+                    <h3>SIMARC</h3>
+                    <p>Empresa operativa dedicada a mantenciones, reparaciones y obras menores.</p>
+                    <ul class="about-list">
+                        <li><i class="fa-solid fa-check"></i> Rapidez</li>
+                        <li><i class="fa-solid fa-check"></i> Solución técnica</li>
+                        <li><i class="fa-solid fa-check"></i> Ejecución confiable</li>
+                        <li><i class="fa-solid fa-check"></i> Atención 24/7</li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contacto" class="contact-section">
+        <div class="container contact-inner">
+            <div class="contact-info">
+                <h2>Contacto</h2>
+                <p class="contact-subtitle">Estamos aquí para ayudarte. Hablemos de tu comunidad.</p>
+                
+                <ul class="contact-details">
+                    <li>
+                        <i class="fa-solid fa-phone"></i>
+                        <div>
+                            <strong>Teléfono</strong>
+                            <a href="tel:+56912345678" style="color:inherit;text-decoration:none;">+56 9 1234 5678</a>
+                        </div>
+                    </li>
+                    <li>
+                        <i class="fa-solid fa-envelope"></i>
+                        <div>
+                            <strong>Email</strong>
+                            <span>contacto@proadministra.cl</span>
+                        </div>
+                    </li>
+                    <li>
+                        <i class="fa-solid fa-location-dot"></i>
+                        <div>
+                            <strong>Ubicación</strong>
+                            <span>Santiago y alrededores</span>
+                        </div>
+                    </li>
+                    <li>
+                        <i class="fa-regular fa-clock"></i>
+                        <div>
+                            <strong>Horario de atención</strong>
+                            <span>Lunes a Viernes: 9:00 a 18:00<br>Emergencias 24/7</span>
+                        </div>
+                    </li>
+                </ul>
+                
+                <div class="contact-alternatives-modern">
+                    <a href="https://wa.me/56912345678" target="_blank" rel="noopener" class="btn-whatsapp">
+                        <i class="fa-brands fa-whatsapp"></i> WhatsApp
+                    </a>
+                    <a href="tel:+56912345678" class="btn-emergency-large">
+                        <i class="fa-solid fa-phone"></i> Emergencias
+                    </a>
+                </div>
+            </div>
+            
+            <div class="contact-form-container">
+                <div class="form-box">
+                    <h3>Envíanos un mensaje</h3>
+                    <form action="enviar.php" method="POST" class="modern-contact-form">
+                        <input type="hidden" name="origen" value="Formulario de Contacto Web">
+                        <div class="field">
+                            <input type="text" id="contacto-nombre" name="nombre" placeholder=" " required>
+                            <label for="contacto-nombre">Nombre completo</label>
+                            <span class="field-icon"><i class="fa-regular fa-user"></i></span>
+                        </div>
+                        <div class="field-row">
+                            <div class="field">
+                                <input type="email" id="contacto-email" name="email" placeholder=" " required>
+                                <label for="contacto-email">Correo electrónico</label>
+                                <span class="field-icon"><i class="fa-regular fa-envelope"></i></span>
+                            </div>
+                            <div class="field">
+                                <input type="tel" id="contacto-tel" name="telefono" placeholder=" " required>
+                                <label for="contacto-tel">Teléfono</label>
+                                <span class="field-icon"><i class="fa-solid fa-phone"></i></span>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <textarea id="contacto-msg" name="mensaje" rows="5" placeholder=" " required></textarea>
+                            <label for="contacto-msg">Mensaje</label>
+                            <span class="field-icon"><i class="fa-regular fa-comment-dots"></i></span>
+                        </div>
+                        <button type="submit" class="btn-primary w-full btn-large">
+                            <i class="fa-solid fa-paper-plane"></i> Enviar mensaje
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-top">
+            <div class="container footer-grid">
+
+                <!-- Columna 1: Marca -->
+                <div class="footer-brand">
+                    <div class="footer-logos">
+                        <div class="footer-logo-item">
+                            <div class="fl-pro"><i class="fa-solid fa-building"></i></div>
+                            <div>
+                                <strong>PROADMINISTRA</strong>
+                                <span>Administración de edificios y condominios</span>
+                            </div>
+                        </div>
+                        <div class="footer-logo-item">
+                            <div class="fl-simarc"><i class="fa-solid fa-house-chimney-crack"></i></div>
+                            <div>
+                                <strong>SIMARC</strong>
+                                <span>Mantención y reparaciones</span>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="footer-tagline">Un solo equipo que administra y también resuelve. Todo lo que tu comunidad necesita, en un solo lugar.</p>
+                    <div class="footer-social">
+                        <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+
+                <!-- Columna 2: Navegación -->
+                <div>
+                    <p class="footer-col-title">Navegación</p>
+                    <nav class="footer-nav">
+                        <a href="index.html"><i class="fa-solid fa-chevron-right"></i> Inicio</a>
+                        <a href="administracion.html"><i class="fa-solid fa-chevron-right"></i> Administración</a>
+                        <a href="mantenciones.html"><i class="fa-solid fa-chevron-right"></i> Mantenciones</a>
+                        <a href="servicios.html"><i class="fa-solid fa-chevron-right"></i> Servicios</a>
+                        <a href="nosotros.html"><i class="fa-solid fa-chevron-right"></i> Nosotros</a>
+                        <a href="cotizacion.html"><i class="fa-solid fa-chevron-right"></i> Solicitar Cotización</a>
+                    </nav>
+                </div>
+
+                <!-- Columna 3: Contacto -->
+                <div>
+                    <p class="footer-col-title">Contacto</p>
+                    <ul class="footer-contact-list">
+                        <li>
+                            <i class="fa-solid fa-phone"></i>
+                            <a href="tel:+56912345678">+56 9 1234 5678</a>
+                        </li>
+                        <li>
+                            <i class="fa-solid fa-envelope"></i>
+                            <span>contacto@proadministra.cl</span>
+                        </li>
+                        <li>
+                            <i class="fa-solid fa-location-dot"></i>
+                            <span>Santiago y alrededores</span>
+                        </li>
+                        <li>
+                            <i class="fa-regular fa-clock"></i>
+                            <span>Lun–Vie 9:00–18:00<br>Emergencias 24/7</span>
+                        </li>
+                        <li>
+                            <i class="fa-brands fa-whatsapp"></i>
+                            <a href="https://wa.me/56912345678" target="_blank" rel="noopener">Escribir por WhatsApp</a>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Bottom bar -->
+        <div class="footer-bottom">
+            <div class="container footer-bottom-inner">
+                <p>© 2026 Proadministra SpA. Todos los derechos reservados.</p>
+                <div class="footer-bottom-sep"></div>
+                <p>Santiago, Chile</p>
+            </div>
+        </div>
+    </footer>
+
+
+    <script src="script.js"></script>
+</body>
+</html>
