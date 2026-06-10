@@ -202,6 +202,9 @@ ul {
     display: flex;
     align-items: center;
     gap: 20px;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
 }
 .logo {
     display: flex;
@@ -290,8 +293,7 @@ ul {
     background-image: url('https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&q=80&w=1200');
     background-size: cover;
     background-position: center;
-    opacity: 0.8;
-    mix-blend-mode: overlay;
+    opacity: 0.6;
     mask-image: linear-gradient(to right, transparent 0%, black 40%);
     -webkit-mask-image: linear-gradient(to right, transparent 0%, black 40%);
 }
