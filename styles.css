@@ -1368,13 +1368,16 @@ ul {
 }
 .about-box h3 {
     font-size: 1.5rem;
-    color: var(--color-proadmin-blue);
     margin-bottom: 15px;
 }
+.about-box.box-pro h3 { color: var(--color-proadmin-blue); }
+.about-box.box-simarc h3 { color: var(--color-simarc-green); }
+
 .about-box p {
     font-size: 0.95rem;
     color: var(--color-gray-600);
     margin-bottom: 25px;
+    line-height: 1.6;
 }
 .about-list li {
     display: flex;
@@ -1385,9 +1388,8 @@ ul {
     font-weight: 600;
     color: var(--color-gray-800);
 }
-.about-list li i {
-    color: var(--color-simarc-green);
-}
+.about-box.box-pro .about-list li i { color: var(--color-proadmin-blue); }
+.about-box.box-simarc .about-list li i { color: var(--color-simarc-green); }
 
 /* Responsive Internas */
 @media (max-width: 1024px) {
