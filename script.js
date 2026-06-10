@@ -40,9 +40,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
             try {
                 const formData = new FormData(form);
+                const data = Object.fromEntries(formData.entries());
+                
                 const response = await fetch(form.action, {
                     method: 'POST',
-                    body: formData
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
                 });
                 
                 const result = await response.json();
