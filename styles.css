@@ -498,6 +498,11 @@ ul {
     position: relative;
     z-index: 2;
 }
+.cycle-node img {
+    width: 45px;
+    height: auto;
+    object-fit: contain;
+}
 .pro-node {
     color: var(--color-proadmin-blue);
     border-color: var(--color-proadmin-blue);
