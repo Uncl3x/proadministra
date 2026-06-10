@@ -213,9 +213,13 @@ ul {
 }
 .logo i {
     font-size: 2rem;
-}
-.logo-proadministra i {
     color: var(--color-proadmin-blue);
+}
+.nav-logo-img {
+    width: 36px;
+    height: auto;
+    object-fit: contain;
+    flex-shrink: 0;
 }
 .logo-simarc i {
     color: var(--color-simarc-green);
