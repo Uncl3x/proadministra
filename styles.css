@@ -863,14 +863,24 @@ ul {
 @media (max-width: 900px) {
     .footer-grid {
         grid-template-columns: 1fr 1fr;
+        gap: 40px;
     }
-    .footer-brand { grid-column: span 2; }
+    .footer-brand { 
+        grid-column: span 2; 
+    }
+    .footer-grid > div:nth-child(2),
+    .footer-grid > div:nth-child(3) {
+        justify-self: start;
+    }
 }
 @media (max-width: 600px) {
     .footer-grid {
         grid-template-columns: 1fr;
+        gap: 40px;
     }
-    .footer-brand { grid-column: span 1; }
+    .footer-brand { 
+        grid-column: span 1; 
+    }
 }
 
 
