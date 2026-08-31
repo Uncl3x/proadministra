@@ -53,8 +53,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 const result = await response.json();
                 
                 if (response.ok) {
-                    alert(result.message || '¡Gracias por tu mensaje! Nos pondremos en contacto pronto.');
                     form.reset();
+                    window.location.href = 'gracias.html';
                 } else {
                     alert(result.message || 'Error al enviar el mensaje. Intenta nuevamente.');
                 }
