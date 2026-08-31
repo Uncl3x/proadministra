@@ -981,8 +981,7 @@
 
             // Recopilar datos
             const formData = new FormData(e.target);
-            const data = Object.fromEntries(formData.entries());
-            data.origen = 'Formulario de Cotizacion';
+            formData.append('origen', 'Formulario de Cotizacion');
 
             // Cambiar botón a estado de carga
             const submitBtn = e.target.querySelector('button[type="submit"]');
@@ -993,8 +992,7 @@
             try {
                 const response = await fetch('enviar.php', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
+                    body: formData
                 });
 
                 if (response.ok) {

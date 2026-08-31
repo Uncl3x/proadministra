@@ -1,8 +1,15 @@
 <?php
 // Permitir solicitudes desde cualquier origen (CORS) - Útil si se prueba desde otro dominio
 header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
 header("Content-Type: application/json; charset=UTF-8");
+
+// Manejar preflight request de CORS (OPTIONS)
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit;
+}
 
 // Solo aceptar peticiones POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -11,18 +18,14 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-// Recibir el JSON enviado por Javascript
-$json = file_get_contents('php://input');
-$data = json_decode($json, true);
-
-// Extraer variables
-$origen = isset($data['origen']) ? $data['origen'] : 'Formulario Web';
-$nombre = isset($data['nombre']) ? trim($data['nombre']) : '';
-$email = isset($data['email']) ? trim($data['email']) : '';
-$telefono = isset($data['telefono']) ? trim($data['telefono']) : 'No especificado';
-$mensaje = isset($data['mensaje']) ? trim($data['mensaje']) : '';
-$servicio = isset($data['servicio']) ? trim($data['servicio']) : 'No especificado';
-$direccion = isset($data['direccion']) ? trim($data['direccion']) : 'No especificada';
+// Extraer variables desde POST normal
+$origen = isset($_POST['origen']) ? $_POST['origen'] : 'Formulario Web';
+$nombre = isset($_POST['nombre']) ? trim($_POST['nombre']) : '';
+$email = isset($_POST['email']) ? trim($_POST['email']) : '';
+$telefono = isset($_POST['telefono']) ? trim($_POST['telefono']) : 'No especificado';
+$mensaje = isset($_POST['mensaje']) ? trim($_POST['mensaje']) : '';
+$servicio = isset($_POST['servicio']) ? trim($_POST['servicio']) : 'No especificado';
+$direccion = isset($_POST['direccion']) ? trim($_POST['direccion']) : 'No especificada';
 
 // Validar campos obligatorios
 if (empty($nombre) || empty($email) || empty($mensaje)) {
