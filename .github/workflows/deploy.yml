@@ -20,6 +20,6 @@ jobs:
           username: ${{ secrets.FTP_USER }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./
-          server-dir: /home/proadmin/proadministra-web/
+          server-dir: /home/proadmin/public_html/
           state-name: .ftp-deploy-sync-state.json
           dangerous-clean-slate: false
