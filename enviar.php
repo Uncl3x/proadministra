@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <?php
 // Permitir solicitudes desde cualquier origen (CORS) - Útil si se prueba desde otro dominio
 header("Access-Control-Allow-Origin: *");
