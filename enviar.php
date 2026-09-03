@@ -1,69 +1,114 @@
 <?php
-// Permitir solicitudes desde cualquier origen (CORS) - Útil si se prueba desde otro dominio
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: POST, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type");
-header("Content-Type: application/json; charset=UTF-8");
+declare(strict_types=1);
 
-// Manejar preflight request de CORS (OPTIONS)
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
+/* ─────────── Configuración ─────────── */
+$DESTINO   = 'contacto@proadministra.cl';
+$REMITENTE = 'contacto@proadministra.cl';   // debe ser un buzón real del dominio
+$LOG       = __DIR__ . '/../logs/formularios.log';
+$MAX_POR_HORA = 5;                           // por IP
+
+header('Content-Type: application/json; charset=UTF-8');
+header('X-Content-Type-Options: nosniff');
+// Sin cabeceras CORS: los formularios son del mismo origen y no las necesitan.
+
+function responder(int $code, string $status, string $message): void {
+    http_response_code($code);
+    echo json_encode(['status' => $status, 'message' => $message], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
-// Solo aceptar peticiones POST
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(405);
-    echo json_encode(["status" => "error", "message" => "Método no permitido"]);
-    exit;
+if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
+    responder(405, 'error', 'Método no permitido.');
 }
 
-// Extraer variables desde POST normal
-$origen = isset($_POST['origen']) ? $_POST['origen'] : 'Formulario Web';
-$nombre = isset($_POST['nombre']) ? trim($_POST['nombre']) : '';
-$email = isset($_POST['email']) ? trim($_POST['email']) : '';
-$telefono = isset($_POST['telefono']) ? trim($_POST['telefono']) : 'No especificado';
-$mensaje = isset($_POST['mensaje']) ? trim($_POST['mensaje']) : '';
-$servicio = isset($_POST['servicio']) ? trim($_POST['servicio']) : 'No especificado';
-$direccion = isset($_POST['direccion']) ? trim($_POST['direccion']) : 'No especificada';
-
-// Validar campos obligatorios
-if (empty($nombre) || empty($email) || empty($mensaje)) {
-    http_response_code(400);
-    echo json_encode(["status" => "error", "message" => "Por favor, completa todos los campos obligatorios."]);
-    exit;
+/* ─────────── Anti-inyección de cabeceras ─────────── */
+function limpiar(string $v): string {
+    return trim(preg_replace('/[\r\n\t]+/', ' ', $v));
+}
+function campo(string $k, string $def = ''): string {
+    return isset($_POST[$k]) && $_POST[$k] !== '' ? limpiar((string) $_POST[$k]) : $def;
 }
 
-// Configuración del correo
-$to = "contacto@proadministra.cl"; // CAMBIA ESTO A TU CORREO REAL
-$subject = "Nuevo Mensaje de Contacto: " . $origen;
-
-// Cuerpo del correo
-$email_content = "Has recibido un nuevo mensaje desde tu sitio web.\n\n";
-$email_content .= "Origen: $origen\n";
-$email_content .= "Nombre: $nombre\n";
-$email_content .= "Email: $email\n";
-$email_content .= "Teléfono: $telefono\n";
-
-// Si viene del formulario de cotización, mostrar campos extra
-if ($origen === 'Formulario de Cotizacion') {
-    $email_content .= "Servicio de interés: $servicio\n";
-    $email_content .= "Dirección/Condominio: $direccion\n";
+/* ─────────── Honeypot y trampa de tiempo ─────────── */
+// Un bot rellena todo, incluido el campo oculto. Fingimos éxito para no avisarle.
+if (campo('website') !== '') {
+    responder(200, 'success', '¡Gracias por tu mensaje!');
+}
+$ts = (int) campo('ts', '0');
+if ($ts > 0 && (time() - $ts) < 3) {   // enviado en menos de 3 segundos = bot
+    responder(200, 'success', '¡Gracias por tu mensaje!');
 }
 
-$email_content .= "\nMensaje:\n$mensaje\n";
-
-// Cabeceras del correo
-$headers = "From: webmaster@proadministra.cl\r\n"; // Idealmente, usar un correo del mismo dominio
-$headers .= "Reply-To: $email\r\n";
-$headers .= "X-Mailer: PHP/" . phpversion();
-
-// Enviar correo
-if (mail($to, $subject, $email_content, $headers)) {
-    http_response_code(200);
-    echo json_encode(["status" => "success", "message" => "¡Gracias por tu mensaje! Nos pondremos en contacto pronto."]);
-} else {
-    http_response_code(500);
-    echo json_encode(["status" => "error", "message" => "Oops! Hubo un error al enviar tu mensaje. (Error interno de PHP mail)"]);
+/* ─────────── Límite por IP ─────────── */
+$ip = $_SERVER['REMOTE_ADDR'] ?? 'desconocida';
+$marcador = sys_get_temp_dir() . '/pa_' . md5($ip);
+$envios = file_exists($marcador) ? (array) json_decode((string) file_get_contents($marcador), true) : [];
+$envios = array_filter($envios, static fn($t) => $t > time() - 3600);
+if (count($envios) >= $MAX_POR_HORA) {
+    responder(429, 'error', 'Has enviado varios mensajes seguidos. Intenta más tarde o escríbenos a contacto@proadministra.cl');
 }
-?>
+
+/* ─────────── Datos ─────────── */
+$origen    = campo('origen', 'Formulario Web');
+$nombre    = campo('nombre');
+$email     = campo('email');
+$telefono  = campo('telefono', 'No especificado');
+$servicio  = campo('servicio');
+$comunidad = campo('comunidad');
+$urgencia  = campo('urgencia');
+// El cuerpo sí admite saltos de línea: no entra a las cabeceras.
+$mensaje   = isset($_POST['mensaje']) ? trim((string) $_POST['mensaje']) : '';
+
+/* ─────────── Validación ─────────── */
+if ($nombre === '' || $email === '' || $mensaje === '') {
+    responder(400, 'error', 'Por favor, completa todos los campos obligatorios.');
+}
+if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    responder(400, 'error', 'El correo electrónico no parece válido.');
+}
+if (mb_strlen($mensaje) > 5000) {
+    responder(400, 'error', 'El mensaje es demasiado largo.');
+}
+
+/* ─────────── Cuerpo del correo ─────────── */
+$L = str_repeat('─', 46);
+$cuerpo  = "Nuevo mensaje desde proadministra.cl\n$L\n\n";
+$cuerpo .= "Origen:     $origen\n";
+$cuerpo .= "Nombre:     $nombre\n";
+$cuerpo .= "Email:      $email\n";
+$cuerpo .= "Teléfono:   $telefono\n";
+if ($servicio  !== '') { $cuerpo .= "Servicio:   $servicio\n"; }
+if ($comunidad !== '') { $cuerpo .= "Comunidad:  $comunidad\n"; }
+if ($urgencia  !== '') { $cuerpo .= "Urgencia:   $urgencia\n"; }
+$cuerpo .= "\nMensaje:\n$L\n$mensaje\n$L\n";
+$cuerpo .= "Recibido:   " . date('d-m-Y H:i:s') . "\n";
+$cuerpo .= "IP:         $ip\n";
+
+/* ─────────── Cabeceras ─────────── */
+$asunto = '=?UTF-8?B?' . base64_encode("Web Proadministra: $origen — $nombre") . '?=';
+
+$headers = implode("\r\n", [
+    "From: Proadministra Web <$REMITENTE>",
+    "Reply-To: $email",
+    'MIME-Version: 1.0',
+    'Content-Type: text/plain; charset=UTF-8',
+    'Content-Transfer-Encoding: 8bit',
+    'X-Mailer: PHP/' . phpversion(),
+]);
+
+/* ─────────── Envío ─────────── */
+$ok = mail($DESTINO, $asunto, $cuerpo, $headers, '-f ' . $REMITENTE);
+
+/* ─────────── Registro ─────────── */
+@file_put_contents($LOG, sprintf(
+    "[%s] %-4s | %s | %s | %s | %s%s",
+    date('c'), $ok ? 'OK' : 'FAIL', $origen, $nombre, $email, $ip, PHP_EOL
+), FILE_APPEND | LOCK_EX);
+
+if ($ok) {
+    $envios[] = time();
+    @file_put_contents($marcador, json_encode(array_values($envios)));
+    responder(200, 'success', '¡Gracias por tu mensaje! Nos pondremos en contacto pronto.');
+}
+
+responder(500, 'error', 'No pudimos enviar tu mensaje. Escríbenos directamente a contacto@proadministra.cl');

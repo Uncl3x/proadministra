@@ -1,4 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('input[name="ts"]').forEach(i => {
+        i.value = Math.floor(Date.now() / 1000);
+    });
     // Smooth scrolling for navigation links
     const navLinks = document.querySelectorAll('.nav-links a, .nav-cta a');
     
