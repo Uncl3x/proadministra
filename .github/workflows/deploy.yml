@@ -23,3 +23,12 @@ jobs:
           server-dir: ./
           state-name: .ftp-deploy-sync-state.json
           dangerous-clean-slate: false
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            **/.DS_Store
+            package.json
+            package-lock.json
+            PLAN-*.md
+            README.md
