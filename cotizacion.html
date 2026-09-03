@@ -661,6 +661,9 @@
             </div>
 
             <form id="quote-form" novalidate>
+                <input type="text" name="website" tabindex="-1" autocomplete="off"
+                       style="position:absolute;left:-9999px;opacity:0;height:0;width:0;" aria-hidden="true">
+                <input type="hidden" name="ts" value="">
 
                 <!-- STEP 1: Servicio -->
                 <div class="form-step active" id="step-1">
@@ -704,26 +707,26 @@
                     <p class="form-step-subtitle">Necesitamos tus datos para poder contactarte con la propuesta.</p>
 
                     <div class="field">
-                        <input type="text" id="nombre" placeholder=" " autocomplete="name" required>
+                        <input type="text" id="nombre" name="nombre" placeholder=" " autocomplete="name" required>
                         <label for="nombre">Nombre completo *</label>
                         <span class="field-icon"><i class="fa-regular fa-user"></i></span>
                     </div>
 
                     <div class="field-row">
                         <div class="field">
-                            <input type="email" id="email" placeholder=" " autocomplete="email" required>
+                            <input type="email" id="email" name="email" placeholder=" " autocomplete="email" required>
                             <label for="email">Correo electrónico *</label>
                             <span class="field-icon"><i class="fa-regular fa-envelope"></i></span>
                         </div>
                         <div class="field">
-                            <input type="tel" id="telefono" placeholder=" " autocomplete="tel" required>
+                            <input type="tel" id="telefono" name="telefono" placeholder=" " autocomplete="tel" required>
                             <label for="telefono">Teléfono *</label>
                             <span class="field-icon"><i class="fa-solid fa-phone"></i></span>
                         </div>
                     </div>
 
                     <div class="field">
-                        <input type="text" id="comunidad" placeholder=" ">
+                        <input type="text" id="comunidad" name="comunidad" placeholder=" ">
                         <label for="comunidad">Nombre de la comunidad o edificio</label>
                         <span class="field-icon"><i class="fa-solid fa-city"></i></span>
                     </div>
@@ -745,7 +748,7 @@
                     <p class="form-step-subtitle">Mientras más información nos des, mejor podremos preparar tu cotización.</p>
 
                     <div class="field">
-                        <select id="urgencia">
+                        <select id="urgencia" name="urgencia">
                             <option value="" disabled selected></option>
                             <option value="normal">Normal (en los próximos días)</option>
                             <option value="pronto">Pronto (esta semana)</option>
@@ -755,7 +758,7 @@
                     </div>
 
                     <div class="field">
-                        <textarea id="mensaje" placeholder=" " required></textarea>
+                        <textarea id="mensaje" name="mensaje" placeholder=" " required></textarea>
                         <label for="mensaje">Describe lo que necesitas *</label>
                         <span class="field-icon"><i class="fa-regular fa-comment-dots"></i></span>
                     </div>
@@ -995,6 +998,8 @@
                     body: formData
                 });
 
+                const result = await response.json();
+
                 if (response.ok) {
                     panels[current].classList.remove('active');
                     document.getElementById('quote-success').style.display = 'block';
@@ -1002,7 +1007,7 @@
                     tabs.forEach(t => { t.classList.remove('active'); t.classList.add('done'); });
                     setTimeout(() => { window.location.href = 'gracias.html'; }, 2000);
                 } else {
-                    alert('Error al enviar el mensaje. Intenta nuevamente.');
+                    alert(result.message || 'Error al enviar el mensaje. Intenta nuevamente.');
                 }
             } catch (error) {
                 alert('Ocurrió un error al conectarse con el servidor.');
