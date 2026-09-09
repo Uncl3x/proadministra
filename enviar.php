@@ -124,7 +124,8 @@ try {
     $ok = true;
 } catch (Exception $e) {
     $ok = false;
-    error_log("Error de PHPMailer: {$mail->ErrorInfo}");
+    $error_msg = $mail->ErrorInfo;
+    error_log("Error de PHPMailer: " . $error_msg);
 }
 
 /* ─────────── Registro ─────────── */
@@ -139,4 +140,4 @@ if ($ok) {
     responder(200, 'success', '¡Gracias por tu mensaje! Nos pondremos en contacto pronto.');
 }
 
-responder(500, 'error', 'No pudimos enviar tu mensaje. Escríbenos directamente a contacto@proadministra.cl');
+responder(500, 'error', 'Error SMTP: ' . ($error_msg ?? 'desconocido'));
