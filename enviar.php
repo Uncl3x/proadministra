@@ -17,6 +17,18 @@ function responder(int $code, string $status, string $message): void {
     exit;
 }
 
+if (!file_exists(__DIR__ . '/smtp-config.php')) {
+    responder(500, 'error', 'Error interno: Falta el archivo de configuración SMTP.');
+}
+require_once __DIR__ . '/smtp-config.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+require_once __DIR__ . '/lib/PHPMailer/src/Exception.php';
+require_once __DIR__ . '/lib/PHPMailer/src/PHPMailer.php';
+require_once __DIR__ . '/lib/PHPMailer/src/SMTP.php';
+
 if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
     responder(405, 'error', 'Método no permitido.');
 }
@@ -84,20 +96,36 @@ $cuerpo .= "\nMensaje:\n$L\n$mensaje\n$L\n";
 $cuerpo .= "Recibido:   " . date('d-m-Y H:i:s') . "\n";
 $cuerpo .= "IP:         $ip\n";
 
-/* ─────────── Cabeceras ─────────── */
-$asunto = '=?UTF-8?B?' . base64_encode("Web Proadministra: $origen — $nombre") . '?=';
-
-$headers = implode("\r\n", [
-    "From: Proadministra Web <$REMITENTE>",
-    "Reply-To: $email",
-    'MIME-Version: 1.0',
-    'Content-Type: text/plain; charset=UTF-8',
-    'Content-Transfer-Encoding: 8bit',
-    'X-Mailer: PHP/' . phpversion(),
-]);
-
 /* ─────────── Envío ─────────── */
-$ok = mail($DESTINO, $asunto, $cuerpo, $headers, '-f ' . $REMITENTE);
+$mail = new PHPMailer(true);
+$ok = false;
+try {
+    // Configuración del servidor
+    $mail->isSMTP();
+    $mail->Host       = SMTP_HOST;
+    $mail->SMTPAuth   = true;
+    $mail->Username   = SMTP_USERNAME;
+    $mail->Password   = SMTP_PASSWORD;
+    $mail->SMTPSecure = SMTP_SECURE;
+    $mail->Port       = SMTP_PORT;
+    $mail->CharSet    = 'UTF-8';
+
+    // Remitente y destinatarios
+    $mail->setFrom($REMITENTE, 'Proadministra Web');
+    $mail->addAddress($DESTINO);
+    $mail->addReplyTo($email, $nombre);
+
+    // Contenido
+    $mail->isHTML(false);
+    $mail->Subject = "Web Proadministra: $origen — $nombre";
+    $mail->Body    = $cuerpo;
+
+    $mail->send();
+    $ok = true;
+} catch (Exception $e) {
+    $ok = false;
+    error_log("Error de PHPMailer: {$mail->ErrorInfo}");
+}
 
 /* ─────────── Registro ─────────── */
 @file_put_contents($LOG, sprintf(
