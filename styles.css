@@ -1655,3 +1655,212 @@ ul {
         padding: 30px !important;
     }
 }
+
+/* ADMIN PROFILE SECTION */
+.admin-profile-section {
+    padding: 60px 0 0;
+    background-color: var(--color-gray-100);
+}
+.admin-profile-card {
+    display: flex;
+    background-color: var(--color-white);
+    border-radius: 20px;
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    max-width: 1100px;
+    margin: 0 auto 60px;
+}
+.admin-photo {
+    flex: 0 0 42%;
+    position: relative;
+    min-height: 500px;
+}
+.admin-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.admin-info {
+    flex: 1;
+    padding: 50px 60px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.admin-logo-right {
+    position: absolute;
+    top: 40px;
+    right: 50px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.admin-logo-right img {
+    width: 32px;
+    height: auto;
+}
+.admin-logo-text {
+    display: flex;
+    flex-direction: column;
+}
+.admin-logo-text strong {
+    font-size: 1.1rem;
+    color: var(--color-proadmin-blue);
+    line-height: 1.1;
+    font-weight: 800;
+}
+.admin-logo-text span {
+    font-size: 0.6rem;
+    color: var(--color-gray-600);
+    letter-spacing: 0.5px;
+}
+
+.admin-badge {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--color-proadmin-blue);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    margin-top: 20px;
+}
+.admin-name {
+    font-size: 2.6rem;
+    color: var(--color-proadmin-blue);
+    margin-bottom: 2px;
+    line-height: 1.2;
+    font-weight: 800;
+}
+.admin-title {
+    font-size: 1.3rem;
+    color: var(--color-gray-600);
+    font-weight: 400;
+    margin-bottom: 35px;
+    padding-bottom: 25px;
+    border-bottom: 2px solid var(--color-simarc-green);
+    display: inline-block;
+}
+.admin-experience {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+.admin-exp-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    border: 2px solid var(--color-proadmin-blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: var(--color-proadmin-blue);
+    flex-shrink: 0;
+}
+.admin-exp-text {
+    display: flex;
+    flex-direction: column;
+}
+.admin-exp-text strong {
+    color: var(--color-proadmin-blue);
+    font-size: 1.05rem;
+}
+.admin-exp-text span {
+    color: var(--color-gray-800);
+    font-size: 0.95rem;
+}
+.admin-desc p {
+    margin-bottom: 15px;
+    color: var(--color-gray-600);
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+.admin-quote {
+    border-left: 3px solid var(--color-simarc-green);
+    padding-left: 15px;
+    margin-top: 15px;
+    font-size: 1.15rem;
+    font-style: italic;
+    color: var(--color-proadmin-blue);
+    font-weight: 700;
+}
+
+/* Admin Features Bar */
+.admin-features-bar {
+    background-color: var(--color-proadmin-blue);
+    padding: 30px 0;
+}
+.admin-features-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    max-width: 1100px;
+}
+.admin-feature {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    color: var(--color-white);
+}
+.admin-feature i {
+    font-size: 1.8rem;
+    color: var(--color-white);
+    opacity: 0.9;
+    border: 1px solid rgba(255,255,255,0.4);
+    border-radius: 8px;
+    padding: 10px;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.admin-feature span {
+    font-size: 0.9rem;
+    line-height: 1.3;
+    font-weight: 500;
+}
+
+/* Admin Responsive */
+@media (max-width: 992px) {
+    .admin-profile-card {
+        flex-direction: column;
+    }
+    .admin-photo {
+        width: 100%;
+        min-height: 400px;
+    }
+    .admin-info {
+        padding: 40px;
+    }
+    .admin-logo-right {
+        position: relative;
+        top: 0;
+        right: 0;
+        margin-bottom: 20px;
+    }
+}
+@media (max-width: 768px) {
+    .admin-info {
+        padding: 30px 20px;
+    }
+    .admin-name {
+        font-size: 2rem;
+    }
+    .admin-features-inner {
+        flex-direction: column;
+        align-items: flex-start;
+        padding-left: 20px;
+    }
+    .admin-feature {
+        width: 100%;
+    }
+}
